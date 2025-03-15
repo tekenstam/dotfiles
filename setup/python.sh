@@ -173,33 +173,75 @@ EOF
 install_python_tools() {
   echo -e "${BLUE}Installing Python tools...${NC}"
   
-  # Update pip
+  # Install pipx for isolated application installation
+  if ! command -v pipx &> /dev/null; then
+    echo -e "${BLUE}Installing pipx...${NC}"
+    brew install pipx
+    pipx ensurepath
+  else
+    echo -e "${GREEN}pipx is already installed.${NC}"
+  fi
+  
+  # Create a tools virtual environment for library usage
+  TOOLS_VENV="$HOME/.python-tools-venv"
+  echo -e "${BLUE}Creating tools virtual environment at $TOOLS_VENV...${NC}"
+  python3 -m venv "$TOOLS_VENV"
+  source "$TOOLS_VENV/bin/activate"
+  
+  # Update pip in the virtual environment
+  echo -e "${BLUE}Updating pip in virtual environment...${NC}"
   python3 -m pip install --upgrade pip
   
-  # List of useful Python packages
-  local packages=(
+  # Install library packages in virtual environment
+  echo -e "${BLUE}Installing library packages in virtual environment...${NC}"
+  local venv_packages=(
     "ipython"           # Enhanced interactive Python shell
     "black"             # Code formatter
     "flake8"            # Linter
     "isort"             # Import sorter
     "mypy"              # Static type checker
     "pytest"            # Testing framework
-    "poetry"            # Dependency management
-    "pipenv"            # Virtual environment management
-    "jupyterlab"        # Jupyter notebooks
     "requests"          # HTTP for humans
-    "httpie"            # Command-line HTTP client
-    "virtualenv"        # Virtual environment
     "wheel"             # Built-package format
     "setuptools"        # Package installer
   )
   
-  for package in "${packages[@]}"; do
-    echo -e "${BLUE}Installing ${package}...${NC}"
-    python3 -m pip install --user "${package}"
+  for package in "${venv_packages[@]}"; do
+    echo -e "${BLUE}Installing ${package} in virtual environment...${NC}"
+    python3 -m pip install "${package}"
+  done
+  
+  # Deactivate the virtual environment
+  deactivate
+  
+  # Add the virtual environment to .zshrc.local if not already present
+  if ! grep -q "PYTHON_TOOLS_VENV" ~/.zshrc.local 2>/dev/null; then
+    cat >> ~/.zshrc.local << EOF
+
+# Python tools virtual environment
+export PYTHON_TOOLS_VENV="$TOOLS_VENV"
+alias activate-tools="source \$PYTHON_TOOLS_VENV/bin/activate"
+EOF
+    echo -e "${GREEN}Added Python tools virtual environment to ~/.zshrc.local${NC}"
+  fi
+  
+  # Install application packages with pipx for isolation
+  echo -e "${BLUE}Installing application packages with pipx...${NC}"
+  local pipx_packages=(
+    "poetry"            # Dependency management
+    "pipenv"            # Virtual environment management
+    "jupyterlab"        # Jupyter notebooks
+    "httpie"            # Command-line HTTP client
+  )
+  
+  for package in "${pipx_packages[@]}"; do
+    echo -e "${BLUE}Installing ${package} with pipx...${NC}"
+    pipx install "${package}"
   done
   
   echo -e "${GREEN}Python tools installed successfully!${NC}"
+  echo -e "${YELLOW}Use 'activate-tools' to use the virtual environment with dev tools${NC}"
+  echo -e "${YELLOW}Installed applications are available directly via PATH${NC}"
 }
 
 # Main script logic
