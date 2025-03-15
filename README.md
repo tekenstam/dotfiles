@@ -69,6 +69,34 @@ These `.local` files are not tracked in Git, so your personal information remain
 
 ## Features
 
+This dotfiles repository includes the following major features:
+
+### ZSH Environment
+
+- **Powerlevel10k Theme**: Advanced, highly customizable ZSH theme
+  - Shows AWS profile, Kubernetes context, and Git status
+  - Color-coded for different environments (production/staging)
+  - Optimized for performance with instant prompt
+
+- **Essential ZSH Plugins**:
+  - Syntax highlighting for shell commands
+  - Autosuggestions based on command history
+  - AWS, Docker, Kubernetes, and Git integrations
+
+### Cross-Platform Support
+
+This dotfiles repository is designed to work across different operating systems and architectures with minimal friction:
+
+- **OS-Specific Configuration**:
+  - macOS-specific settings in `macos/`
+  - Architecture detection for Apple Silicon vs Intel
+  - Conditional Homebrew paths and configurations
+
+- **Personal Customization**:
+  - `.local` files for machine-specific settings
+  - `manage-local` utility for organizing local configurations
+  - Templates for personal settings like Git identity
+
 ### Utility Functions
 This dotfiles repository includes a variety of utility functions to boost productivity:
 
@@ -264,6 +292,73 @@ This dotfiles repository is designed to work across different operating systems 
        eval "$(/usr/local/bin/brew shellenv)"
    fi
    ```
+
+## Updating
+
+When any changes are made to the upstream repository, you can update your local installation:
+
+```bash
+# Pull latest changes
+cd ~/.dotfiles
+git pull
+
+# Re-run installation to apply new changes
+./install.sh
+```
+
+For a shortcut, use the provided utility script:
+```bash
+~/bin/update-dotfiles
+```
+
+## Advanced Usage
+
+### Selective Feature Installation
+
+You can run specific setup scripts directly:
+
+```bash
+# Install only Homebrew packages
+./macos/brew.sh --core --dev
+
+# Set up only Python environment
+./setup/python.sh --install-pyenv --install-tools
+
+# Set up ZSH plugins without Powerlevel10k
+./install.sh --no-p10k
+```
+
+### Running Non-Interactive Installation
+
+For scripted or automated installation:
+
+```bash
+# Full non-interactive installation
+./install.sh --no-prompt
+
+# Non-interactive with specific features
+./install.sh --no-prompt --no-zsh --apply-macos-defaults
+```
+
+## Troubleshooting
+
+### Common Issues
+
+- **Powerlevel10k Fonts**: If you see strange symbols in your terminal, make sure to install and configure the MesloLGS NF font.
+  
+- **ZSH Plugins Not Loading**: Make sure the plugins directory exists and has the correct permissions:
+  ```bash
+  ls -la ~/.oh-my-zsh/custom/plugins/
+  ```
+
+- **Local Configuration Files**: Make sure these are named correctly and have the right permissions:
+  ```bash
+  chmod 644 ~/.zshrc.local ~/.gitconfig.local
+  ```
+  
+### Getting Help
+
+If you encounter any problems with these dotfiles, please [open an issue](https://github.com/tekenstam/dotfiles/issues) on GitHub.
 
 ## Customizing and Extending
 
