@@ -11,8 +11,7 @@ To set up a new machine with these dotfiles:
 ```bash
 git clone https://github.com/tekenstam/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./setup-plugins.sh  # Install Oh My Zsh, Powerlevel10k, and plugins
-./install.sh        # Set up symlinks for configuration files
+./install.sh        # Sets up everything in one go
 ```
 
 ### Installation Options
@@ -21,6 +20,8 @@ The installation scripts support safety flags to control behavior:
 
 - `./install.sh --no-prompt`: Skip all confirmation prompts (useful for automated setup)
 - `./install.sh --apply-macos-defaults`: Automatically apply macOS settings without a main prompt
+- `./install.sh --no-zsh`: Skip ZSH plugins installation 
+- `./install.sh --no-p10k`: Skip Powerlevel10k setup
 - `./macos/defaults.sh --no-prompt`: Apply all macOS defaults without confirmation prompts
 
 When run without flags, the scripts will prompt for confirmation before making any potentially destructive changes.
@@ -53,9 +54,15 @@ These `.local` files are not tracked in Git, so your personal information remain
     - `git-utils.zsh` - Git workflow helpers
     - `ssh-utils.zsh` - SSH key and connection management
     - `system-utils.zsh` - System utilities and safeguards
+    - `cli-utils.zsh` - Command-line utility functions
+  - `setup/` - ZSH and Powerlevel10k setup scripts
+    - `plugins.sh` - Installs Oh My Zsh and useful plugins
+    - `powerlevel10k.sh` - Sets up the Powerlevel10k theme and fonts
 - `git/` - Git configuration
 - `vim/` - Vim/Neovim configuration
 - `macos/` - macOS specific settings
+  - `defaults.sh` - macOS system preferences defaults
+  - `brew.sh` - Homebrew package installation
 - `bin/` - Useful scripts
 - `local/` - Templates for local customizations
 - `setup/` - Language-specific development environment setup

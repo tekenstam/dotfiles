@@ -9,6 +9,8 @@ BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d%H%M%S)"
 # Parse command line arguments
 NO_PROMPT=false
 APPLY_MACOS_DEFAULTS=false
+SETUP_ZSH=true
+SETUP_POWERLEVEL10K=true
 
 for arg in "$@"; do
   case $arg in
@@ -18,6 +20,14 @@ for arg in "$@"; do
       ;;
     --apply-macos-defaults)
       APPLY_MACOS_DEFAULTS=true
+      shift
+      ;;
+    --no-zsh)
+      SETUP_ZSH=false
+      shift
+      ;;
+    --no-p10k)
+      SETUP_POWERLEVEL10K=false
       shift
       ;;
   esac
@@ -74,6 +84,37 @@ link_file "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
 link_file "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile"
 link_file "$DOTFILES_DIR/zsh/.zsh_aliases" "$HOME/.zsh_aliases"
 link_file "$DOTFILES_DIR/zsh/.p10k.zsh" "$HOME/.p10k.zsh"
+
+# Setup ZSH plugins and Powerlevel10k
+if [ "$SETUP_ZSH" = true ]; then
+    if [ -f "$DOTFILES_DIR/zsh/setup/plugins.sh" ]; then
+        if [ "$NO_PROMPT" = true ] || confirm "Do you want to set up ZSH plugins? (autosuggestions, syntax-highlighting, etc.)"; then
+            echo "Setting up ZSH plugins..."
+            if [ "$NO_PROMPT" = true ]; then
+                "$DOTFILES_DIR/zsh/setup/plugins.sh" --no-prompt
+            else
+                "$DOTFILES_DIR/zsh/setup/plugins.sh"
+            fi
+        else
+            echo "Skipping ZSH plugins setup."
+        fi
+    fi
+fi
+
+if [ "$SETUP_POWERLEVEL10K" = true ]; then
+    if [ -f "$DOTFILES_DIR/zsh/setup/powerlevel10k.sh" ]; then
+        if [ "$NO_PROMPT" = true ] || confirm "Do you want to set up Powerlevel10k theme?"; then
+            echo "Setting up Powerlevel10k theme..."
+            if [ "$NO_PROMPT" = true ]; then
+                "$DOTFILES_DIR/zsh/setup/powerlevel10k.sh" --no-prompt
+            else
+                "$DOTFILES_DIR/zsh/setup/powerlevel10k.sh"
+            fi
+        else
+            echo "Skipping Powerlevel10k setup."
+        fi
+    fi
+fi
 
 # Install Git configuration
 echo "Setting up Git configuration..."
