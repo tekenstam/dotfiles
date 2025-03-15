@@ -46,8 +46,8 @@ grebase() {
 }
 
 # Clean up local branches that have been merged and deleted on remote
-# Usage: gclean
-gclean() {
+# Usage: git_clean_branches
+git_clean_branches() {
   echo "This will remove all local branches that have been merged and deleted on remote."
   echo "Are you sure you want to continue? [y/N]"
   read -r response

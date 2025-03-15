@@ -70,28 +70,31 @@ sysinfo() {
 }
 
 # CPU architecture-specific environment setup
+# Automatically detects Apple Silicon vs Intel and sets up appropriate paths
 setup_arch_env() {
-  local arch_name="$(uname -m)"
-  
-  if [[ "${arch_name}" == "x86_64" ]]; then
-    echo "Setting up environment for x86_64 architecture"
-    # Intel Mac or Linux
-    export ARCH_BREW_PREFIX="/usr/local"
-  elif [[ "${arch_name}" == "arm64" ]]; then
-    echo "Setting up environment for ARM64 architecture"
-    # M1/M2 Mac
-    export ARCH_BREW_PREFIX="/opt/homebrew"
+  if [[ $(uname -m) == "arm64" ]]; then
+    # This is silent by default to avoid Powerlevel10k warnings
+    if [[ "$1" == "--verbose" ]]; then
+      echo "Setting up environment for ARM64 architecture"
+    fi
+    # Apple Silicon specific settings
+    export HOMEBREW_PREFIX="/opt/homebrew"
+    export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+    export HOMEBREW_REPOSITORY="/opt/homebrew"
+    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}"
+    export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:"
+    export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
   else
-    echo "Unknown architecture: ${arch_name}"
-    return 1
-  fi
-  
-  # Add architecture-specific paths
-  export PATH="${ARCH_BREW_PREFIX}/bin:${ARCH_BREW_PREFIX}/sbin:$PATH"
-  export MANPATH="${ARCH_BREW_PREFIX}/share/man:$MANPATH"
-  
-  # Source architecture-specific configurations if they exist
-  if [[ -f "${ZDOTDIR:-$HOME}/.zshrc.${arch_name}" ]]; then
-    source "${ZDOTDIR:-$HOME}/.zshrc.${arch_name}"
+    # This is silent by default to avoid Powerlevel10k warnings
+    if [[ "$1" == "--verbose" ]]; then
+      echo "Setting up environment for x86_64 architecture"
+    fi
+    # Intel Mac specific settings
+    export HOMEBREW_PREFIX="/usr/local"
+    export HOMEBREW_CELLAR="/usr/local/Cellar"
+    export HOMEBREW_REPOSITORY="/usr/local/Homebrew"
+    export PATH="/usr/local/bin:/usr/local/sbin${PATH+:$PATH}"
+    export MANPATH="/usr/local/share/man${MANPATH+:$MANPATH}:"
+    export INFOPATH="/usr/local/share/info:${INFOPATH:-}"
   fi
 }
