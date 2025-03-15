@@ -6,6 +6,38 @@ set -e
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d%H%M%S)"
 
+# Parse command line arguments
+NO_PROMPT=false
+APPLY_MACOS_DEFAULTS=false
+
+for arg in "$@"; do
+  case $arg in
+    --no-prompt)
+      NO_PROMPT=true
+      shift
+      ;;
+    --apply-macos-defaults)
+      APPLY_MACOS_DEFAULTS=true
+      shift
+      ;;
+  esac
+done
+
+# Function to prompt for confirmation
+confirm() {
+  if [ "$NO_PROMPT" = true ]; then
+    return 0
+  fi
+  
+  local message=$1
+  read -p "$message [y/N] " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    return 1
+  fi
+  return 0
+}
+
 # Create backup directory
 mkdir -p "$BACKUP_DIR"
 
@@ -27,6 +59,14 @@ link_file() {
     echo "Linking $src to $dest"
     ln -sf "$src" "$dest"
 }
+
+# Display warning and confirmation
+echo "This script will create symlinks from your home directory to the dotfiles in this repository."
+echo "It will back up any existing files with the same names to $BACKUP_DIR."
+if ! confirm "Do you want to continue?"; then
+    echo "Installation canceled."
+    exit 0
+fi
 
 # Install ZSH files
 echo "Setting up ZSH configuration..."
@@ -67,18 +107,31 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     
     # Check if Homebrew is installed
     if ! command -v brew &> /dev/null; then
-        echo "Homebrew not found. Would you like to install it? (y/n)"
-        read -r install_homebrew
-        if [[ "$install_homebrew" =~ ^[Yy]$ ]]; then
+        if confirm "Homebrew not found. Would you like to install it?"; then
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         fi
     fi
     
     # Apply macOS settings
     if [ -f "$DOTFILES_DIR/macos/defaults.sh" ]; then
-        echo "Applying macOS settings..."
-        bash "$DOTFILES_DIR/macos/defaults.sh"
+        if [ "$APPLY_MACOS_DEFAULTS" = true ] || confirm "Do you want to apply macOS settings? This will modify your system preferences."; then
+            echo "Applying macOS settings..."
+            if [ "$NO_PROMPT" = true ]; then
+                bash "$DOTFILES_DIR/macos/defaults.sh" --no-prompt
+            else
+                bash "$DOTFILES_DIR/macos/defaults.sh"
+            fi
+        else
+            echo "Skipping macOS settings."
+        fi
     fi
+fi
+
+# Setup architecture-specific environment
+if [ -f "$DOTFILES_DIR/zsh/functions/system-utils.zsh" ]; then
+    source "$DOTFILES_DIR/zsh/functions/system-utils.zsh"
+    echo "Setting up architecture-specific environment..."
+    setup_arch_env
 fi
 
 echo "Installation complete! You may need to restart your terminal for all changes to take effect."

@@ -15,6 +15,16 @@ cd ~/.dotfiles
 ./install.sh        # Set up symlinks for configuration files
 ```
 
+### Installation Options
+
+The installation scripts support safety flags to control behavior:
+
+- `./install.sh --no-prompt`: Skip all confirmation prompts (useful for automated setup)
+- `./install.sh --apply-macos-defaults`: Automatically apply macOS settings without a main prompt
+- `./macos/defaults.sh --no-prompt`: Apply all macOS defaults without confirmation prompts
+
+When run without flags, the scripts will prompt for confirmation before making any potentially destructive changes.
+
 ### Personal Configuration
 
 This repository keeps personal configuration separate from shared configuration:
