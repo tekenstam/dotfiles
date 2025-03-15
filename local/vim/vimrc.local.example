@@ -1,0 +1,19 @@
+" Local Vim configuration
+" Copy this file to ~/.vimrc.local to use it
+
+" Example: Color scheme
+" colorscheme solarized
+" set background=dark
+
+" Example: Custom keymaps
+" nnoremap <leader>w :w<CR>
+" nnoremap <leader>q :q<CR>
+
+" Example: Custom settings
+" set number
+" set relativenumber
+" set colorcolumn=80
+
+" Example: Custom plugins (if using a plugin manager)
+" Plug 'tpope/vim-fugitive'
+" Plug 'junegunn/fzf.vim'

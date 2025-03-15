@@ -1,0 +1,161 @@
+#!/bin/bash
+
+# Script to manage local dotfiles customizations
+# Part of the dotfiles repository
+
+set -e
+DOTFILES_DIR="$HOME/.dotfiles"
+LOCAL_DIR="$DOTFILES_DIR/local"
+HOME_LOCAL_DIR="$HOME/.dotfiles-local"
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Function to print usage
+usage() {
+  echo -e "${BLUE}Usage:${NC} $(basename "$0") [command]"
+  echo ""
+  echo "Commands:"
+  echo "  init       Initialize local customization directory"
+  echo "  list       List all local customization files"
+  echo "  edit TYPE  Edit a specific local configuration file"
+  echo "             (TYPE: zsh, git, vim, aliases)"
+  echo "  sync       Sync local customizations with dotfiles"
+  echo ""
+  echo "Examples:"
+  echo "  $(basename "$0") init"
+  echo "  $(basename "$0") edit zsh"
+  echo "  $(basename "$0") sync"
+}
+
+# Function to initialize local customization directory
+init_local() {
+  echo -e "${BLUE}Initializing local customization directory at $HOME_LOCAL_DIR${NC}"
+  
+  if [ -d "$HOME_LOCAL_DIR" ]; then
+    echo -e "${YELLOW}Directory already exists. Updating...${NC}"
+  else
+    mkdir -p "$HOME_LOCAL_DIR"
+    echo -e "${GREEN}Created directory $HOME_LOCAL_DIR${NC}"
+  fi
+  
+  # Create subdirectories
+  mkdir -p "$HOME_LOCAL_DIR/zsh"
+  mkdir -p "$HOME_LOCAL_DIR/git"
+  mkdir -p "$HOME_LOCAL_DIR/vim"
+  mkdir -p "$HOME_LOCAL_DIR/bin"
+  
+  # Copy example files if they don't exist
+  if [ ! -f "$HOME/.zshrc.local" ]; then
+    cp "$LOCAL_DIR/zsh/zshrc.local.example" "$HOME/.zshrc.local"
+    echo -e "${GREEN}Created ~/.zshrc.local${NC}"
+  fi
+  
+  if [ ! -f "$HOME/.gitconfig.local" ]; then
+    cp "$LOCAL_DIR/git/gitconfig.local.example" "$HOME/.gitconfig.local"
+    echo -e "${GREEN}Created ~/.gitconfig.local${NC}"
+  fi
+  
+  if [ ! -f "$HOME/.vimrc.local" ]; then
+    cp "$LOCAL_DIR/vim/vimrc.local.example" "$HOME/.vimrc.local"
+    echo -e "${GREEN}Created ~/.vimrc.local${NC}"
+  fi
+  
+  echo -e "${GREEN}Initialization complete!${NC}"
+  echo -e "You can now customize your local dotfiles in $HOME_LOCAL_DIR"
+  echo -e "Or edit the .local files directly in your home directory"
+}
+
+# Function to list all local customization files
+list_local() {
+  echo -e "${BLUE}Available local customization files:${NC}"
+  echo -e "${YELLOW}ZSH:${NC}"
+  echo -e "  ~/.zshrc.local"
+  echo -e "  $HOME_LOCAL_DIR/zsh/*"
+  
+  echo -e "${YELLOW}Git:${NC}"
+  echo -e "  ~/.gitconfig.local"
+  echo -e "  $HOME_LOCAL_DIR/git/*"
+  
+  echo -e "${YELLOW}Vim:${NC}"
+  echo -e "  ~/.vimrc.local"
+  echo -e "  $HOME_LOCAL_DIR/vim/*"
+  
+  echo -e "${YELLOW}Bin:${NC}"
+  echo -e "  $HOME_LOCAL_DIR/bin/*"
+}
+
+# Function to edit a specific local configuration file
+edit_local() {
+  TYPE=$1
+  EDITOR=${EDITOR:-vim}
+  
+  case $TYPE in
+    zsh)
+      $EDITOR "$HOME/.zshrc.local"
+      ;;
+    git)
+      $EDITOR "$HOME/.gitconfig.local"
+      ;;
+    vim)
+      $EDITOR "$HOME/.vimrc.local"
+      ;;
+    *)
+      echo -e "${RED}Invalid type: $TYPE${NC}"
+      usage
+      exit 1
+      ;;
+  esac
+}
+
+# Function to sync local customizations with dotfiles
+sync_local() {
+  echo -e "${BLUE}Syncing local customizations...${NC}"
+  
+  # Check if .dotfiles-local exists
+  if [ ! -d "$HOME_LOCAL_DIR" ]; then
+    echo -e "${YELLOW}$HOME_LOCAL_DIR does not exist. Run 'init' first.${NC}"
+    exit 1
+  fi
+  
+  # Copy local files to dotfiles directory
+  cp -f "$HOME/.zshrc.local" "$HOME_LOCAL_DIR/zsh/" 2>/dev/null || true
+  cp -f "$HOME/.gitconfig.local" "$HOME_LOCAL_DIR/git/" 2>/dev/null || true
+  cp -f "$HOME/.vimrc.local" "$HOME_LOCAL_DIR/vim/" 2>/dev/null || true
+  
+  echo -e "${GREEN}Sync complete!${NC}"
+}
+
+# Main script logic
+COMMAND=$1
+shift || true
+
+case $COMMAND in
+  init)
+    init_local
+    ;;
+  list)
+    list_local
+    ;;
+  edit)
+    TYPE=$1
+    if [ -z "$TYPE" ]; then
+      echo -e "${RED}Error: Missing type${NC}"
+      usage
+      exit 1
+    fi
+    edit_local "$TYPE"
+    ;;
+  sync)
+    sync_local
+    ;;
+  *)
+    usage
+    ;;
+esac
+
+exit 0

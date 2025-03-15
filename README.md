@@ -57,6 +57,8 @@ These `.local` files are not tracked in Git, so your personal information remain
 - `vim/` - Vim/Neovim configuration
 - `macos/` - macOS specific settings
 - `bin/` - Useful scripts
+- `local/` - Templates for local customizations
+- `setup/` - Language-specific development environment setup
 
 ## Features
 
@@ -87,6 +89,99 @@ This dotfiles repository includes a variety of utility functions to boost produc
   - `disable_prod_safeguard` - Disable the confirmation safeguard
   - `sysinfo` - Display system information
   - `setup_arch_env` - Configure environment based on CPU architecture
+
+### Development Environment Setup
+
+This dotfiles repository includes specialized setup scripts for different programming languages:
+
+- **Go**: `./setup/go.sh`
+  - Installs Go and configures GOPATH
+  - Installs common Go tools (gopls, delve, golangci-lint, etc.)
+  - Sets up environment variables in .zshrc.local
+
+- **Node.js**: `./setup/node.sh`
+  - Installs Node.js via NVM (Node Version Manager)
+  - Installs common Node.js tools (typescript, eslint, prettier, etc.)
+  - Configures NVM in .zshrc.local
+
+- **Python**: `./setup/python.sh`
+  - Installs Python via pyenv
+  - Sets up virtual environment helpers
+  - Installs common Python tools (ipython, black, pytest, etc.)
+
+Options:
+```bash
+# Install everything with default settings
+./setup/node.sh --all
+
+# Install specific components
+./setup/python.sh --install-pyenv
+./setup/go.sh --install-tools
+
+# Specify versions
+./setup/node.sh --node-version=18
+./setup/python.sh --python-version=3.11.5
+```
+
+### Local Customizations
+
+Your personal settings can be managed using the `manage-local` script:
+
+```bash
+# Initialize local customization directory
+./bin/manage-local init
+
+# Edit local configuration files
+./bin/manage-local edit zsh
+./bin/manage-local edit git
+./bin/manage-local edit vim
+
+# List all local customization files
+./bin/manage-local list
+
+# Sync your local customizations
+./bin/manage-local sync
+```
+
+This creates a separate structure for your machine-specific settings without modifying the main dotfiles:
+
+```
+~/.dotfiles-local/
+├── git/
+├── vim/
+├── zsh/
+└── bin/
+```
+
+### Command-Line Utilities
+
+This dotfiles repository includes many useful command-line utilities:
+
+- **File Management**:
+  - `mkd dir` - Create a directory and enter it
+  - `extract file` - Extract any archive format
+  - `dataurl file` - Create a data URL from a file
+  - `findlarge [size]` - Find large files (default: +100M)
+
+- **System Information**:
+  - `myip` - Get your external IP address
+  - `localip` - Get your local IP addresses
+  - `topmem` - Show top memory-consuming processes
+  - `topcpu` - Show top CPU-consuming processes
+  - `dirsize dir` - Show directory size
+  - `ducks` - Show disk usage, sorted by size
+
+- **Development**:
+  - `server [port]` - Start an HTTP server in current directory
+  - `jsonpp file` - Pretty print JSON
+  - `timestamp2date timestamp` - Convert Unix timestamp to date
+  - `shellbench [runs]` - Benchmark shell startup time
+  - `genpasswd [length]` - Generate a random password
+  - `cheat command` - Get a cheat sheet for a command
+
+- **Network**:
+  - `listening` - List all listening ports
+  - `killport port` - Kill process using a specific port
 
 ### Production Safeguards
 The production safeguards feature prevents accidental execution of dangerous commands:

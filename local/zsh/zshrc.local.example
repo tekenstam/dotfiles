@@ -1,0 +1,19 @@
+# Local ZSH configuration
+# Copy this file to ~/.zshrc.local to use it
+
+# Example: Custom environment variables
+# export EDITOR="code"
+# export VISUAL="code"
+
+# Example: Path additions
+# export PATH="$HOME/.local/bin:$PATH"
+
+# Example: Custom aliases
+# alias projects="cd ~/Projects"
+# alias dotfiles="cd ~/.dotfiles"
+
+# Example: Load specific tool (uncomment as needed)
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# eval "$(pyenv init -)"
+# eval "$(rbenv init -)"
+# eval "$(nodenv init -)"

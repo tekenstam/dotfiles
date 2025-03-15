@@ -1,0 +1,23 @@
+# Local Git configuration
+# Copy this file to ~/.gitconfig.local to use it
+
+[user]
+    name = Your Name
+    email = your.email@example.com
+
+# Optional: Signing commits
+# [user]
+#    signingkey = YOUR_GPG_KEY_ID
+
+# [commit]
+#    gpgsign = true
+
+# Optional: GitHub configuration
+# [github]
+#    user = your-github-username
+
+# Optional: Custom aliases
+# [alias]
+#    standup = !git log --since=yesterday --author=\"$(git config user.name)\" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr)%Creset'
+#    today = !git log --since=midnight --author=\"$(git config user.name)\" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr)%Creset'
+#    changelog = !git log --pretty=format:'%s' --reverse --no-merges
