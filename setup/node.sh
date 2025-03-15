@@ -1,7 +1,20 @@
 #!/bin/bash
 
-# Node.js setup script
-# Sets up Node.js development environment with tools and configuration
+# Node.js Development Environment Setup
+# -----------------------------------
+# This script installs Node.js via NVM and sets up a complete
+# development environment with common tools and packages
+#
+# Usage:
+#   ./setup/node.sh                        # Interactive installation
+#   ./setup/node.sh --all                  # Install everything
+#   ./setup/node.sh --install-node         # Only install Node.js
+#   ./setup/node.sh --install-tools        # Only install Node.js tools
+#   ./setup/node.sh --node-version=18      # Specify Node.js version
+#   ./setup/node.sh --no-prompt            # Non-interactive installation
+#
+# Author: tekenstam
+# Last Updated: 2025-03-15
 
 set -e
 

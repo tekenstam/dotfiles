@@ -1,7 +1,16 @@
 #!/bin/bash
 
 # ZSH Plugins Setup Script
-# This script installs and configures ZSH plugins
+# -----------------------
+# This script installs and configures Oh My Zsh and essential ZSH plugins
+# including syntax highlighting, autosuggestions, and kubectl integration
+#
+# Usage:
+#   ./zsh/setup/plugins.sh           # Interactive installation
+#   ./zsh/setup/plugins.sh --no-prompt  # Non-interactive installation
+#
+# Author: tekenstam
+# Last Updated: 2025-03-15
 
 set -e
 

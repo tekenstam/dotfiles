@@ -1,7 +1,19 @@
 #!/bin/bash
 
-# Go setup script
-# Sets up Go development environment with tools and configuration
+# Go Development Environment Setup
+# -------------------------------
+# This script installs Go and sets up a complete development environment
+# including GOPATH configuration and essential Go tools
+#
+# Usage:
+#   ./setup/go.sh                    # Interactive installation
+#   ./setup/go.sh --all              # Install everything
+#   ./setup/go.sh --install-go       # Only install Go
+#   ./setup/go.sh --install-tools    # Only install Go tools
+#   ./setup/go.sh --no-prompt        # Non-interactive installation
+#
+# Author: tekenstam
+# Last Updated: 2025-03-15
 
 set -e
 

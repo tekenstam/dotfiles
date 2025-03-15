@@ -1,7 +1,23 @@
 #!/bin/bash
 
-# Homebrew setup script
-# Installs Homebrew and common packages
+# macOS Homebrew Package Installation
+# ---------------------------------
+# This script installs Homebrew and common packages organized into categories
+# It detects the CPU architecture (Intel/Apple Silicon) and installs appropriate packages
+#
+# Usage:
+#   ./macos/brew.sh                 # Interactive installation with prompts
+#   ./macos/brew.sh --install-brew  # Only install Homebrew itself
+#   ./macos/brew.sh --core          # Install core packages
+#   ./macos/brew.sh --dev           # Install development packages
+#   ./macos/brew.sh --utils         # Install utility packages
+#   ./macos/brew.sh --extras        # Install extra nice-to-have packages
+#   ./macos/brew.sh --casks         # Install GUI applications
+#   ./macos/brew.sh --all           # Install everything
+#   ./macos/brew.sh --no-prompt     # Non-interactive installation
+#
+# Author: tekenstam
+# Last Updated: 2025-03-15
 
 set -e
 

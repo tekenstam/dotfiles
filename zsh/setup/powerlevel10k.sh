@@ -1,7 +1,16 @@
 #!/bin/bash
 
-# Powerlevel10k Setup Script
-# This script installs and configures Powerlevel10k theme for ZSH
+# Powerlevel10k Theme Setup Script
+# ------------------------------
+# This script installs and configures the Powerlevel10k ZSH theme
+# and the required Meslo Nerd Font for proper rendering
+#
+# Usage:
+#   ./zsh/setup/powerlevel10k.sh          # Interactive installation
+#   ./zsh/setup/powerlevel10k.sh --no-prompt # Non-interactive installation
+#
+# Author: tekenstam
+# Last Updated: 2025-03-15
 
 set -e
 

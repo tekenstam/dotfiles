@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Dotfiles Installation Script
+# This script sets up the dotfiles by creating symlinks and configuring the environment
+# It handles ZSH plugins, Powerlevel10k, and development environment setup
+
 # Exit on error
 set -e
 
@@ -7,10 +11,10 @@ DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d%H%M%S)"
 
 # Parse command line arguments
-NO_PROMPT=false
-APPLY_MACOS_DEFAULTS=false
-SETUP_ZSH=true
-SETUP_POWERLEVEL10K=true
+NO_PROMPT=false             # Skip all confirmation prompts
+APPLY_MACOS_DEFAULTS=false  # Apply macOS settings automatically
+SETUP_ZSH=true          # Set up ZSH plugins
+SETUP_POWERLEVEL10K=true    # Set up Powerlevel10k theme
 
 for arg in "$@"; do
   case $arg in

@@ -1,7 +1,15 @@
 #!/bin/bash
 
-# Script to manage local dotfiles customizations
-# Part of the dotfiles repository
+# Dotfiles Local Configuration Manager
+# -----------------------------------
+# This script helps manage local customizations for dotfiles
+# 
+# It creates and manages the ~/.dotfiles-local directory
+# which stores machine-specific configurations that
+# aren't tracked in the main dotfiles repository
+#
+# Author: tekenstam
+# Last Updated: 2025-03-15
 
 set -e
 DOTFILES_DIR="$HOME/.dotfiles"

@@ -1,7 +1,20 @@
 #!/bin/bash
 
-# Python setup script
-# Sets up Python development environment with virtual environments and tools
+# Python Development Environment Setup
+# ----------------------------------
+# This script installs Python via pyenv and sets up a complete
+# development environment with virtual environments and essential tools
+#
+# Usage:
+#   ./setup/python.sh                          # Interactive installation
+#   ./setup/python.sh --all                    # Install everything
+#   ./setup/python.sh --install-pyenv          # Only install pyenv and Python
+#   ./setup/python.sh --install-tools          # Only install Python tools
+#   ./setup/python.sh --python-version=3.11.5  # Specify Python version
+#   ./setup/python.sh --no-prompt              # Non-interactive installation
+#
+# Author: tekenstam
+# Last Updated: 2025-03-15
 
 set -e
 
