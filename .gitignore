@@ -1,6 +1,8 @@
 # Personal configuration files
 *.local
 *.local.*
+# Allow example templates
+!*.local.example
 
 # Vim temporary files
 *.swp
