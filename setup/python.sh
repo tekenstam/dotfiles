@@ -18,12 +18,8 @@
 
 set -e
 
-# Colors
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[0;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+# Source common utilities
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 # Python version to install (if using pyenv)
 DEFAULT_PYTHON_VERSION="3.11.5"
@@ -31,7 +27,6 @@ DEFAULT_PYTHON_VERSION="3.11.5"
 # Parse command line arguments
 INSTALL_PYENV=false
 INSTALL_TOOLS=false
-NO_PROMPT=false
 PYTHON_VERSION="$DEFAULT_PYTHON_VERSION"
 
 for arg in "$@"; do
@@ -44,8 +39,8 @@ for arg in "$@"; do
       INSTALL_TOOLS=true
       shift
       ;;
-    --no-prompt)
-      NO_PROMPT=true
+    --python-version=*)
+      PYTHON_VERSION="${arg#*=}"
       shift
       ;;
     --all)
@@ -53,102 +48,85 @@ for arg in "$@"; do
       INSTALL_TOOLS=true
       shift
       ;;
-    --python-version=*)
-      PYTHON_VERSION="${arg#*=}"
+    --no-prompt)
+      # Handled by common.sh
+      shift
+      ;;
+    *)
+      # Skip unknown arguments
       shift
       ;;
   esac
 done
 
-# Function to prompt for confirmation
-confirm() {
-  if [ "$NO_PROMPT" = true ]; then
-    return 0
-  fi
-  
-  local message=$1
-  read -p "$message [y/N] " -n 1 -r
-  echo
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    return 1
-  fi
-  return 0
-}
+# Parse common arguments (e.g., --no-prompt)
+parse_common_args "$@"
 
 # Check if Python is installed
 check_python() {
-  if command -v python3 >/dev/null 2>&1; then
-    echo -e "${GREEN}Python is already installed:${NC} $(python3 --version)"
+  if command_exists python3; then
+    print_success "Python is already installed: $(python3 --version)"
     return 0
   else
-    echo -e "${YELLOW}Python 3 is not installed.${NC}"
+    print_warning "Python is not installed."
     return 1
   fi
 }
 
 # Install pyenv for managing Python versions
 install_pyenv() {
-  echo -e "${BLUE}Installing pyenv...${NC}"
+  print_section "Installing pyenv"
   
-  if ! command -v brew >/dev/null 2>&1; then
-    echo -e "${RED}Homebrew is required but not installed.${NC}"
-    echo -e "Please install Homebrew first: https://brew.sh/"
-    exit 1
+  # Check if pyenv is installed
+  if command_exists pyenv; then
+    print_success "pyenv is already installed: $(pyenv --version)"
+  else
+    # Install dependencies
+    if is_macos; then
+      ensure_homebrew || return 1
+      brew install openssl readline sqlite3 xz zlib tcl-tk
+    fi
+    
+    # Install pyenv
+    print_warning "Installing pyenv..."
+    curl https://pyenv.run | bash
+    
+    # Set up pyenv for the current session
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
+    
+    print_success "pyenv installed successfully: $(pyenv --version)"
   fi
   
-  # Install pyenv via Homebrew
-  brew install pyenv
-  
-  # Install Python build dependencies
-  brew install openssl readline sqlite3 xz zlib tcl-tk
-  
-  # Install Python using pyenv
-  echo -e "${BLUE}Installing Python $PYTHON_VERSION using pyenv...${NC}"
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-  eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
-  
-  pyenv install "$PYTHON_VERSION"
+  # Install the specified Python version
+  print_warning "Installing Python $PYTHON_VERSION using pyenv..."
+  pyenv install -s "$PYTHON_VERSION"
   pyenv global "$PYTHON_VERSION"
   
-  echo -e "${GREEN}Python $PYTHON_VERSION installed successfully:${NC} $(python --version)"
+  print_success "Python $PYTHON_VERSION installed successfully: $(python --version)"
 }
 
 # Setup Python environment
 setup_python_env() {
-  echo -e "${BLUE}Setting up Python environment...${NC}"
+  print_section "Setting up Python environment"
   
-  # Create projects directory for virtual environments
-  mkdir -p "$HOME/Projects/python_envs"
+  # Add pyenv to zshrc.local
+  add_to_zshrc_local "# pyenv configuration" "export PYENV_ROOT=\"\$HOME/.pyenv\""
+  add_to_zshrc_local "# pyenv configuration" "export PATH=\"\$PYENV_ROOT/bin:\$PATH\""
+  add_to_zshrc_local "# pyenv configuration" "if command -v pyenv >/dev/null 2>&1; then"
+  add_to_zshrc_local "# pyenv configuration" "  eval \"\$(pyenv init --path)\""
+  add_to_zshrc_local "# pyenv configuration" "  eval \"\$(pyenv init -)\""
+  add_to_zshrc_local "# pyenv configuration" "fi"
   
-  # Add pyenv initialization to zshrc if not already present
-  if ! grep -q "pyenv init" ~/.zshrc.local 2>/dev/null; then
-    cat > ~/.zshrc.local.tmp << EOF
-# pyenv configuration
-export PYENV_ROOT="\$HOME/.pyenv"
-export PATH="\$PYENV_ROOT/bin:\$PATH"
-eval "\$(pyenv init --path)"
-eval "\$(pyenv init -)"
-
-# Python aliases
-alias py="python3"
-alias python="python3"
-alias pip="pip3"
-alias venv="python3 -m venv"
-alias activate="source ./venv/bin/activate"
-alias mkvenv="python3 -m venv venv && source ./venv/bin/activate"
-EOF
-    
-    if [ -f ~/.zshrc.local ]; then
-      cat ~/.zshrc.local >> ~/.zshrc.local.tmp
-    fi
-    
-    mv ~/.zshrc.local.tmp ~/.zshrc.local
-    echo -e "${GREEN}Added Python environment to ~/.zshrc.local${NC}"
-  else
-    echo -e "${GREEN}Python environment already configured in ~/.zshrc.local${NC}"
-  fi
+  # Add Python aliases
+  add_to_zshrc_local "# Python aliases" "alias py=\"python3\""
+  add_to_zshrc_local "# Python aliases" "alias python=\"python3\""
+  add_to_zshrc_local "# Python aliases" "alias pip=\"pip3\""
+  add_to_zshrc_local "# Python aliases" "alias venv=\"python3 -m venv\""
+  add_to_zshrc_local "# Python aliases" "alias activate=\"source ./venv/bin/activate\""
+  add_to_zshrc_local "# Python aliases" "alias mkvenv=\"python3 -m venv venv && source ./venv/bin/activate\""
   
   # Create pip.conf with useful defaults if it doesn't exist
   mkdir -p ~/.config/pip
@@ -165,35 +143,35 @@ trusted-host = pypi.org
 [install]
 upgrade-strategy = only-if-needed
 EOF
-    echo -e "${GREEN}Created pip.conf with sensible defaults${NC}"
+    print_success "Created pip.conf with sensible defaults"
   fi
 }
 
 # Install common Python tools
 install_python_tools() {
-  echo -e "${BLUE}Installing Python tools...${NC}"
+  print_section "Installing Python tools"
   
   # Install pipx for isolated application installation
-  if ! command -v pipx &> /dev/null; then
-    echo -e "${BLUE}Installing pipx...${NC}"
+  if ! command_exists pipx; then
+    print_warning "Installing pipx..."
     brew install pipx
     pipx ensurepath
   else
-    echo -e "${GREEN}pipx is already installed.${NC}"
+    print_success "pipx is already installed."
   fi
   
   # Create a tools virtual environment for library usage
   TOOLS_VENV="$HOME/.python-tools-venv"
-  echo -e "${BLUE}Creating tools virtual environment at $TOOLS_VENV...${NC}"
+  print_warning "Creating tools virtual environment at $TOOLS_VENV..."
   python3 -m venv "$TOOLS_VENV"
   source "$TOOLS_VENV/bin/activate"
   
   # Update pip in the virtual environment
-  echo -e "${BLUE}Updating pip in virtual environment...${NC}"
+  print_warning "Updating pip in virtual environment..."
   python3 -m pip install --upgrade pip
   
   # Install library packages in virtual environment
-  echo -e "${BLUE}Installing library packages in virtual environment...${NC}"
+  print_warning "Installing library packages in virtual environment..."
   local venv_packages=(
     "ipython"           # Enhanced interactive Python shell
     "black"             # Code formatter
@@ -214,19 +192,12 @@ install_python_tools() {
   # Deactivate the virtual environment
   deactivate
   
-  # Add the virtual environment to .zshrc.local if not already present
-  if ! grep -q "PYTHON_TOOLS_VENV" ~/.zshrc.local 2>/dev/null; then
-    cat >> ~/.zshrc.local << EOF
-
-# Python tools virtual environment
-export PYTHON_TOOLS_VENV="$TOOLS_VENV"
-alias activate-tools="source \$PYTHON_TOOLS_VENV/bin/activate"
-EOF
-    echo -e "${GREEN}Added Python tools virtual environment to ~/.zshrc.local${NC}"
-  fi
+  # Add the virtual environment to .zshrc.local
+  add_to_zshrc_local "# Python tools virtual environment" "export PYTHON_TOOLS_VENV=\"$TOOLS_VENV\""
+  add_to_zshrc_local "# Python tools virtual environment" "alias activate-tools=\"source \$PYTHON_TOOLS_VENV/bin/activate\""
   
   # Install application packages with pipx for isolation
-  echo -e "${BLUE}Installing application packages with pipx...${NC}"
+  print_warning "Installing application packages with pipx..."
   local pipx_packages=(
     "poetry"            # Dependency management
     "pipenv"            # Virtual environment management
@@ -239,34 +210,31 @@ EOF
     pipx install "${package}"
   done
   
-  echo -e "${GREEN}Python tools installed successfully!${NC}"
-  echo -e "${YELLOW}Use 'activate-tools' to use the virtual environment with dev tools${NC}"
-  echo -e "${YELLOW}Installed applications are available directly via PATH${NC}"
+  print_success "Python tools installed successfully!"
+  print_warning "Use 'activate-tools' to use the virtual environment with dev tools"
+  print_warning "Installed applications are available directly via PATH"
 }
 
 # Main script logic
-echo -e "${BLUE}Python Development Environment Setup${NC}"
-echo -e "===================================\n"
+print_section "Python Development Environment Setup"
 
 # Check if Python is installed
-if ! check_python; then
-  if [ "$INSTALL_PYENV" = true ] || confirm "Do you want to install Python $PYTHON_VERSION using pyenv?"; then
+if check_python; then
+  if [ "$INSTALL_PYENV" = true ] || confirm "Do you want to install pyenv and Python $PYTHON_VERSION?"; then
     install_pyenv
   else
-    echo -e "${YELLOW}Skipping Python installation.${NC}"
-    exit 0
+    print_warning "Skipping pyenv installation."
   fi
 fi
 
-# Setup Python environment
+# Set up Python environment
 setup_python_env
 
 # Install Python tools
-if [ "$INSTALL_TOOLS" = true ] || confirm "Do you want to install common Python tools?"; then
+if [ "$INSTALL_TOOLS" = true ] || confirm "Do you want to install Python tools?"; then
   install_python_tools
 else
-  echo -e "${YELLOW}Skipping Python tools installation.${NC}"
+  print_warning "Skipping Python tools installation."
 fi
 
-echo -e "\n${GREEN}Python setup complete!${NC}"
-echo -e "You may need to restart your terminal or run 'source ~/.zshrc' for changes to take effect."
+print_completion "Python" "You may need to restart your terminal or run 'source ~/.zshrc' for changes to take effect."

@@ -17,17 +17,12 @@
 
 set -e
 
-# Colors
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[0;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+# Source common utilities
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 # Parse command line arguments
 INSTALL_GO=false
 INSTALL_TOOLS=false
-NO_PROMPT=false
 
 for arg in "$@"; do
   case $arg in
@@ -39,89 +34,63 @@ for arg in "$@"; do
       INSTALL_TOOLS=true
       shift
       ;;
-    --no-prompt)
-      NO_PROMPT=true
-      shift
-      ;;
     --all)
       INSTALL_GO=true
       INSTALL_TOOLS=true
       shift
       ;;
+    --no-prompt)
+      # Handled by common.sh
+      shift
+      ;;
+    *)
+      # Skip unknown arguments
+      shift
+      ;;
   esac
 done
 
-# Function to prompt for confirmation
-confirm() {
-  if [ "$NO_PROMPT" = true ]; then
-    return 0
-  fi
-  
-  local message=$1
-  read -p "$message [y/N] " -n 1 -r
-  echo
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    return 1
-  fi
-  return 0
-}
+# Parse common arguments (e.g., --no-prompt)
+parse_common_args "$@"
 
 # Check if Go is installed
 check_go() {
-  if command -v go >/dev/null 2>&1; then
-    echo -e "${GREEN}Go is already installed:${NC} $(go version)"
+  if command_exists go; then
+    print_success "Go is already installed: $(go version)"
     return 0
   else
-    echo -e "${YELLOW}Go is not installed.${NC}"
+    print_warning "Go is not installed."
     return 1
   fi
 }
 
 # Install Go using Homebrew
 install_go() {
-  echo -e "${BLUE}Installing Go...${NC}"
+  print_section "Installing Go"
   
-  if ! command -v brew >/dev/null 2>&1; then
-    echo -e "${RED}Homebrew is required but not installed.${NC}"
-    echo -e "Please install Homebrew first: https://brew.sh/"
-    exit 1
-  fi
+  ensure_homebrew || return 1
   
   brew install go
   
-  echo -e "${GREEN}Go installed successfully:${NC} $(go version)"
+  print_success "Go installed successfully: $(go version)"
 }
 
 # Setup Go environment
 setup_go_env() {
-  echo -e "${BLUE}Setting up Go environment...${NC}"
+  print_section "Setting up Go environment"
   
   # Create Go workspace directories
   mkdir -p "$HOME/go/"{bin,src,pkg}
   
-  # Add Go environment to zshrc if not already present
-  if ! grep -q "GOPATH" ~/.zshrc.local 2>/dev/null; then
-    cat > ~/.zshrc.local.tmp << EOF
-# Go configuration
-export GOPATH=\$HOME/go
-export GOBIN=\$GOPATH/bin
-export PATH=\$PATH:\$GOBIN
-EOF
-    
-    if [ -f ~/.zshrc.local ]; then
-      cat ~/.zshrc.local >> ~/.zshrc.local.tmp
-    fi
-    
-    mv ~/.zshrc.local.tmp ~/.zshrc.local
-    echo -e "${GREEN}Added Go environment to ~/.zshrc.local${NC}"
-  else
-    echo -e "${GREEN}Go environment already configured in ~/.zshrc.local${NC}"
-  fi
+  # Add Go environment to zshrc.local
+  add_to_zshrc_local "# Go configuration" "export GOPATH=\$HOME/go"
+  add_to_zshrc_local "# Go configuration" "export GOBIN=\$GOPATH/bin"
+  add_to_zshrc_local "# Go configuration" "export PATH=\$PATH:\$GOBIN"
 }
 
 # Install common Go tools
 install_go_tools() {
-  echo -e "${BLUE}Installing Go tools...${NC}"
+  print_section "Installing Go tools"
   
   # List of useful Go tools
   local tools=(
@@ -140,12 +109,11 @@ install_go_tools() {
     go install "${tool}"
   done
   
-  echo -e "${GREEN}Go tools installed successfully!${NC}"
+  print_success "Go tools installed successfully!"
 }
 
 # Main script logic
-echo -e "${BLUE}Go Development Environment Setup${NC}"
-echo -e "===============================\n"
+print_section "Go Development Environment Setup"
 
 # Check if Go is installed
 if ! check_go; then
@@ -153,7 +121,7 @@ if ! check_go; then
     install_go
     setup_go_env
   else
-    echo -e "${YELLOW}Skipping Go installation.${NC}"
+    print_warning "Skipping Go installation."
     exit 0
   fi
 else
@@ -164,8 +132,7 @@ fi
 if [ "$INSTALL_TOOLS" = true ] || confirm "Do you want to install common Go tools?"; then
   install_go_tools
 else
-  echo -e "${YELLOW}Skipping Go tools installation.${NC}"
+  print_warning "Skipping Go tools installation."
 fi
 
-echo -e "\n${GREEN}Go setup complete!${NC}"
-echo -e "You may need to restart your terminal or run 'source ~/.zshrc' for changes to take effect."
+print_completion "Go" "You may need to restart your terminal or run 'source ~/.zshrc' for changes to take effect."
