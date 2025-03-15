@@ -1,0 +1,21 @@
+# Personal configuration files
+*.local
+*.local.*
+
+# Vim temporary files
+*.swp
+*.swo
+.netrwhist
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Logs
+*.log
+
+# Temporary files
+*~

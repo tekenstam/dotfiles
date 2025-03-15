@@ -1,0 +1,48 @@
+[user]
+	# User identity is configured in .gitconfig.local
+	# See .gitconfig.local.example for a template
+
+[core]
+	editor = vim
+	excludesfile = ~/.gitignore_global
+	autocrlf = input
+	whitespace = trailing-space,space-before-tab
+
+[init]
+	defaultBranch = main
+
+[color]
+	ui = auto
+
+[pull]
+	rebase = false
+
+[push]
+	default = simple
+	autoSetupRemote = true
+
+[merge]
+	tool = vimdiff
+	conflictstyle = diff3
+
+[diff]
+	tool = vimdiff
+
+[alias]
+	st = status
+	co = checkout
+	ci = commit
+	br = branch
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	visual = !gitk
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	amend = commit --amend
+	wip = commit -am "WIP"
+
+[includeIf "gitdir:~/work/"]
+	path = ~/.gitconfig.work
+
+# This allows you to create a .gitconfig.local file for machine-specific settings
+[include]
+	path = ~/.gitconfig.local
