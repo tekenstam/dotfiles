@@ -134,4 +134,35 @@ if [ -f "$DOTFILES_DIR/zsh/functions/system-utils.zsh" ]; then
     setup_arch_env
 fi
 
+# Development environment setup
+if [ -d "$DOTFILES_DIR/setup" ]; then
+    echo -e "\n======================================="
+    echo "Development Environment Setup"
+    echo "======================================="
+    
+    # Go setup
+    if [ "$NO_PROMPT" = true ] || confirm "Do you want to set up Go development environment?"; then
+        echo "Setting up Go development environment..."
+        "$DOTFILES_DIR/setup/go.sh" --install-go --install-tools
+    else
+        echo "Skipping Go setup."
+    fi
+    
+    # Python setup
+    if [ "$NO_PROMPT" = true ] || confirm "Do you want to set up Python development environment?"; then
+        echo "Setting up Python development environment..."
+        "$DOTFILES_DIR/setup/python.sh" --install-pyenv --install-tools
+    else
+        echo "Skipping Python setup."
+    fi
+    
+    # Node.js setup (not included in --no-prompt default)
+    if [ "$NO_PROMPT" = false ] && confirm "Do you want to set up Node.js development environment?"; then
+        echo "Setting up Node.js development environment..."
+        "$DOTFILES_DIR/setup/node.sh" --install-node --install-tools
+    else
+        echo "Skipping Node.js setup."
+    fi
+fi
+
 echo "Installation complete! You may need to restart your terminal for all changes to take effect."
