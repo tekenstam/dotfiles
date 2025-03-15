@@ -1,5 +1,7 @@
 # Dotfiles
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 This repository contains my personal dotfiles and configuration settings for various tools and applications.
 
 ## Usage
@@ -162,4 +164,4 @@ To keep your dotfiles in sync across multiple machines:
 
 ## License
 
-This repository is licensed under the MIT License.
+This repository is licensed under the [MIT License](LICENSE).
