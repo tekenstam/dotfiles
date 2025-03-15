@@ -1,6 +1,8 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -36,23 +38,17 @@ if [ -f ~/.zsh_aliases ]; then
   source ~/.zsh_aliases
 fi
 
-# Source utility functions
-for function_file in "$HOME/.dotfiles/zsh/functions"/*.zsh; do
-  if [ -f "$function_file" ]; then
-    source "$function_file"
-  fi
-done
+# Aliases for backward compatibility with renamed functions
+alias localip='get_local_ip'
+alias gclean='git_clean_branches'
 
 # Load all ZSH function files
-if [ -d "$HOME/.dotfiles/zsh/functions" ]; then
-  for file in "$HOME/.dotfiles"/zsh/functions/*.zsh; do
+DOTFILES_DIR="$HOME/.dotfiles"
+if [ -d "$DOTFILES_DIR/zsh/functions" ]; then
+  for file in "$DOTFILES_DIR"/zsh/functions/*.zsh; do
     source "$file"
   done
 fi
-
-# Aliases for backward compatibility after function renaming
-alias localip='get_local_ip'
-alias gclean='git_clean_branches'
 
 # Enable production safeguards (uncomment to activate)
 # enable_prod_safeguard

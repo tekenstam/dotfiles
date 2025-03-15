@@ -69,12 +69,16 @@ sysinfo() {
   echo "Terminal: $TERM"
 }
 
+# Load system-utils.zsh silently for Powerlevel10k
+# This flag helps prevent output during zsh initialization
+SILENT_SETUP=${SILENT_SETUP:-1}
+
 # CPU architecture-specific environment setup
 # Automatically detects Apple Silicon vs Intel and sets up appropriate paths
 setup_arch_env() {
   if [[ $(uname -m) == "arm64" ]]; then
-    # This is silent by default to avoid Powerlevel10k warnings
-    if [[ "$1" == "--verbose" ]]; then
+    # Only output if SILENT_SETUP is not enabled
+    if [[ "$SILENT_SETUP" -eq 0 || "$1" == "--verbose" ]]; then
       echo "Setting up environment for ARM64 architecture"
     fi
     # Apple Silicon specific settings
@@ -85,8 +89,8 @@ setup_arch_env() {
     export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:"
     export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
   else
-    # This is silent by default to avoid Powerlevel10k warnings
-    if [[ "$1" == "--verbose" ]]; then
+    # Only output if SILENT_SETUP is not enabled
+    if [[ "$SILENT_SETUP" -eq 0 || "$1" == "--verbose" ]]; then
       echo "Setting up environment for x86_64 architecture"
     fi
     # Intel Mac specific settings
