@@ -105,6 +105,20 @@ done
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Setting up macOS specific configurations..."
     
+    # Install Homebrew and packages
+    if [ -f "$DOTFILES_DIR/macos/brew.sh" ]; then
+        if [ "$NO_PROMPT" = true ] || confirm "Do you want to install Homebrew and common packages?"; then
+            echo "Installing Homebrew and packages..."
+            if [ "$NO_PROMPT" = true ]; then
+                "$DOTFILES_DIR/macos/brew.sh" --install-brew --core --dev --no-prompt
+            else
+                "$DOTFILES_DIR/macos/brew.sh"
+            fi
+        else
+            echo "Skipping Homebrew installation."
+        fi
+    fi
+    
     # Check if Homebrew is installed
     if ! command -v brew &> /dev/null; then
         if confirm "Homebrew not found. Would you like to install it?"; then

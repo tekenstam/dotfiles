@@ -109,6 +109,15 @@ This dotfiles repository includes specialized setup scripts for different progra
   - Sets up virtual environment helpers
   - Installs common Python tools (ipython, black, pytest, etc.)
 
+- **Homebrew**: `./macos/brew.sh`
+  - Installs Homebrew package manager
+  - Installs categorized packages:
+    - **Core**: Essential tools like git, curl, wget, vim
+    - **Development**: Languages and dev tools (Go, Python, Kubernetes, etc.)
+    - **Utilities**: Productivity tools like fzf, ripgrep, tmux
+    - **Extras**: Nice-to-have tools like bat, exa, neofetch
+    - **Casks**: GUI applications (VS Code, Firefox, iTerm2, etc.)
+
 Options:
 ```bash
 # Install everything with default settings
@@ -121,6 +130,10 @@ Options:
 # Specify versions
 ./setup/node.sh --node-version=18
 ./setup/python.sh --python-version=3.11.5
+
+# Install brew packages by category
+./macos/brew.sh --core --dev
+./macos/brew.sh --all --no-prompt
 ```
 
 ### Local Customizations
