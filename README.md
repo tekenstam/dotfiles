@@ -38,50 +38,52 @@ These `.local` files are not tracked in Git, so your personal information remain
   - `.zprofile` - Login shell configuration
   - `.zsh_aliases` - Useful aliases and functions
   - `.p10k.zsh` - Powerlevel10k configuration with AWS, Kubernetes, and Git info
+  - `functions/` - Useful utility functions for various tasks
+    - `docker-utils.zsh` - Docker container management utilities
+    - `git-utils.zsh` - Git workflow helpers
+    - `ssh-utils.zsh` - SSH key and connection management
+    - `system-utils.zsh` - System utilities and safeguards
 - `git/` - Git configuration
 - `vim/` - Vim/Neovim configuration
 - `macos/` - macOS specific settings
 - `bin/` - Useful scripts
 
-## Customizing and Extending
+## Features
 
-### Adding or Modifying Dotfiles
+### Utility Functions
+This dotfiles repository includes a variety of utility functions to boost productivity:
 
-1. **Adding a new configuration file**:
-   ```bash
-   # 1. Create the file in the appropriate directory
-   vim ~/src/github.com/tekenstam/dotfiles/zsh/.zsh_functions
+- **Docker Utilities**:
+  - `dockrun [image]` - Run a disposable container with bash shell
+  - `denter container_id` - Enter a running container with bash
+  - `dockips` - List all containers with their IPs and ports
+  - `dockclean` - Clean up Docker resources (with confirmation)
 
-   # 2. Update the install.sh script to create the symlink
-   vim ~/src/github.com/tekenstam/dotfiles/install.sh
-   # Add: link_file "$DOTFILES_DIR/zsh/.zsh_functions" "$HOME/.zsh_functions"
+- **Git Helpers**:
+  - `gsync branch_name` - Sync a branch with upstream and origin
+  - `gnewbranch branch_name` - Create and push a new branch
+  - `grebase n` - Interactively rebase the last n commits
+  - `gclean` - Clean up merged/deleted branches
+  - `gall [directory]` - Show git status for all repositories
 
-   # 3. Commit and push your changes
-   git add zsh/.zsh_functions install.sh
-   git commit -m "Add .zsh_functions file"
-   git push
-   ```
+- **SSH Management**:
+  - `knownrm line_number` - Remove a line from known_hosts
+  - `knownfind hostname` - Find a host in known_hosts
+  - `sshtunnel local_port remote_host remote_port [ssh_host]` - Create SSH tunnel
+  - `sshcopyid user@host` - Upload SSH key to a server
 
-2. **Modifying existing files**:
-   ```bash
-   # 1. Edit the file in the repository
-   vim ~/src/github.com/tekenstam/dotfiles/zsh/.zshrc
+- **System Utilities**:
+  - `enable_prod_safeguard` - Enable confirmation for potentially dangerous commands
+  - `disable_prod_safeguard` - Disable the confirmation safeguard
+  - `sysinfo` - Display system information
+  - `setup_arch_env` - Configure environment based on CPU architecture
 
-   # 2. Commit and push your changes
-   git add zsh/.zshrc
-   git commit -m "Update .zshrc with new settings"
-   git push
-   ```
+### Production Safeguards
+The production safeguards feature prevents accidental execution of dangerous commands:
 
-3. **Using machine-specific customizations**:
-   Instead of modifying the shared files directly, use the `.local` files for settings specific to a particular machine:
-   ```bash
-   # For machine-specific ZSH settings
-   vim ~/.zshrc.local
-
-   # For machine-specific Git settings
-   vim ~/.gitconfig.local
-   ```
+- Commands containing sensitive terms like "prod", "delete", "remove", etc. will prompt for confirmation
+- Enable by uncommenting `enable_prod_safeguard` in your .zshrc or running the command manually
+- Helps prevent costly mistakes when working with multiple environments
 
 ### Cross-Platform Support
 
@@ -136,6 +138,46 @@ This dotfiles repository is designed to work across different operating systems 
        # Intel Mac
        eval "$(/usr/local/bin/brew shellenv)"
    fi
+   ```
+
+## Customizing and Extending
+
+### Adding or Modifying Dotfiles
+
+1. **Adding a new configuration file**:
+   ```bash
+   # 1. Create the file in the appropriate directory
+   vim ~/src/github.com/tekenstam/dotfiles/zsh/.zsh_functions
+
+   # 2. Update the install.sh script to create the symlink
+   vim ~/src/github.com/tekenstam/dotfiles/install.sh
+   # Add: link_file "$DOTFILES_DIR/zsh/.zsh_functions" "$HOME/.zsh_functions"
+
+   # 3. Commit and push your changes
+   git add zsh/.zsh_functions install.sh
+   git commit -m "Add .zsh_functions file"
+   git push
+   ```
+
+2. **Modifying existing files**:
+   ```bash
+   # 1. Edit the file in the repository
+   vim ~/src/github.com/tekenstam/dotfiles/zsh/.zshrc
+
+   # 2. Commit and push your changes
+   git add zsh/.zshrc
+   git commit -m "Update .zshrc with new settings"
+   git push
+   ```
+
+3. **Using machine-specific customizations**:
+   Instead of modifying the shared files directly, use the `.local` files for settings specific to a particular machine:
+   ```bash
+   # For machine-specific ZSH settings
+   vim ~/.zshrc.local
+
+   # For machine-specific Git settings
+   vim ~/.gitconfig.local
    ```
 
 ## Keeping Dotfiles in Sync

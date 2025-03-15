@@ -36,6 +36,19 @@ if [ -f ~/.zsh_aliases ]; then
   source ~/.zsh_aliases
 fi
 
+# Source utility functions
+for function_file in "$HOME/.dotfiles/zsh/functions"/*.zsh; do
+  if [ -f "$function_file" ]; then
+    source "$function_file"
+  fi
+done
+
+# Enable production safeguards (uncomment to activate)
+# enable_prod_safeguard
+
+# Setup architecture-specific environment
+setup_arch_env
+
 # Source local configuration (not tracked in Git)
 if [ -f ~/.zshrc.local ]; then
   source ~/.zshrc.local
