@@ -131,7 +131,7 @@ install_go_tools() {
     "github.com/josharian/impl@latest"                  # Generate interface stubs
     "github.com/cweill/gotests/gotests@latest"          # Generate tests
     "github.com/golangci/golangci-lint/cmd/golangci-lint@latest" # Linter
-    "github.com/cosmtrek/air@latest"                    # Live reload
+    "github.com/air-verse/air@latest"                   # Live reload (formerly cosmtrek/air)
     "github.com/mikefarah/yq/v4@latest"                 # YAML processor
   )
   
