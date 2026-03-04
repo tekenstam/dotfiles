@@ -74,7 +74,7 @@ SAVEHIST=10000
 HISTFILE=~/.zsh_history
 
 # Created by `pipx` on 2026-03-04 17:46:11
-export PATH="$PATH:/Users/tekenstam/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 
 # Starship prompt (Git, Kubernetes, AWS, directory, status, time)
 eval "$(starship init zsh)"
