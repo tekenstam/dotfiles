@@ -36,4 +36,15 @@ if [ -f "$HOME/.vimrc" ]; then
   cp "$HOME/.vimrc" "$BACKUP_DIR/"
 fi
 
+# Backup local config (not tracked in repo)
+if [ -f "$HOME/.gitconfig.local" ]; then
+  cp "$HOME/.gitconfig.local" "$BACKUP_DIR/"
+fi
+if [ -f "$HOME/.zshrc.local" ]; then
+  cp "$HOME/.zshrc.local" "$BACKUP_DIR/"
+fi
+if [ -f "$HOME/.vimrc.local" ]; then
+  cp "$HOME/.vimrc.local" "$BACKUP_DIR/"
+fi
+
 echo "Backup completed successfully!"
