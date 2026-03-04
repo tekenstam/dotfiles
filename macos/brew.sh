@@ -143,13 +143,14 @@ install_packages() {
   
   echo -e "${BLUE}Installing ${category} packages...${NC}"
   
-  # Create a list of packages to install
+  # Create a list of packages to install; upgrade already-installed to latest
   local to_install=()
   for package in "${packages[@]}"; do
     if ! brew list "$package" &>/dev/null; then
       to_install+=("$package")
     else
-      echo -e "${GREEN}Package ${package} is already installed.${NC}"
+      echo -e "${GREEN}Package ${package} is already installed. Upgrading to latest...${NC}"
+      brew upgrade "$package" 2>/dev/null || true
     fi
   done
   
@@ -159,7 +160,7 @@ install_packages() {
     brew install "${to_install[@]}"
     echo -e "${GREEN}Packages installed successfully!${NC}"
   else
-    echo -e "${GREEN}All packages already installed!${NC}"
+    echo -e "${GREEN}All packages already installed and up to date!${NC}"
   fi
 }
 
@@ -259,6 +260,7 @@ EXTRA_PACKAGES=(
   "mosh" # Mobile shell
   "speedtest-cli"
   "terminal-notifier"
+  "yt-dlp" # Video downloader (successor to youtube-dl)
 )
 
 APP_CASKS=(
