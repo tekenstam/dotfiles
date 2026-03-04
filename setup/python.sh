@@ -21,8 +21,8 @@ set -e
 # Source common utilities
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-# Python version to install (if using pyenv)
-DEFAULT_PYTHON_VERSION="3.11.5"
+# Python version to install (if using pyenv); use latest stable 3.x
+DEFAULT_PYTHON_VERSION="3.13"
 
 # Parse command line arguments
 INSTALL_PYENV=false
