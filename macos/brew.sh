@@ -307,6 +307,11 @@ fi
 
 # Install utility packages
 if [ "$INSTALL_ALL" = true ] || [ "$INSTALL_UTILS" = true ] || confirm "Do you want to install utility packages? (tmux, fzf, etc.)"; then
+  # Unlink deprecated tldr so tlrc (replacement) can install; both provide `tldr` binary
+  if brew list tldr &>/dev/null; then
+    echo -e "${YELLOW}Unlinking deprecated tldr so tlrc can be installed...${NC}"
+    brew unlink tldr 2>/dev/null || true
+  fi
   install_packages "utility" "${UTILITY_PACKAGES[@]}"
 else
   echo -e "${YELLOW}Skipping utility packages.${NC}"
