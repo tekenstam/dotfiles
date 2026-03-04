@@ -13,34 +13,34 @@ BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d%H%M%S)"
 # Parse command line arguments
 NO_PROMPT=false             # Skip all confirmation prompts
 APPLY_MACOS_DEFAULTS=false  # Apply macOS settings automatically
-SETUP_ZSH=true          # Set up ZSH plugins
+SETUP_ZSH=true              # Set up ZSH plugins
 DRY_RUN=false               # Preview only; no changes
 LINKS_ONLY=false            # Only symlinks and .local templates; no optional setup
 
-for arg in "$@"; do
-  case $arg in
+while [ $# -gt 0 ]; do
+  case "$1" in
     --no-prompt)
       NO_PROMPT=true
-      shift
       ;;
     --apply-macos-defaults)
       APPLY_MACOS_DEFAULTS=true
-      shift
       ;;
     --no-zsh)
       SETUP_ZSH=false
-      shift
       ;;
     --dry-run)
       DRY_RUN=true
-      shift
       ;;
     --links-only)
       LINKS_ONLY=true
       NO_PROMPT=true
-      shift
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      exit 1
       ;;
   esac
+  shift
 done
 
 # Function to prompt for confirmation

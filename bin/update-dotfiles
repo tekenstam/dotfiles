@@ -1,14 +1,22 @@
 #!/bin/bash
 
 # Script to update dotfiles repository with any local changes
+set -e
 
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 cd "$DOTFILES_DIR" || exit 1
 
+if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+  echo "Error: not inside a git repository." >&2
+  exit 1
+fi
+
 echo "Updating dotfiles repository..."
 
-# Pull latest changes from remote
-git pull
+if ! git pull; then
+  echo "Error: git pull failed. Resolve any conflicts or check your connection, then run again." >&2
+  exit 1
+fi
 
 # Run the install script to update symlinks only (no optional setup prompts)
 ./install.sh --links-only

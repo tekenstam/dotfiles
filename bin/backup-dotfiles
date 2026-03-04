@@ -36,6 +36,12 @@ if [ -f "$HOME/.vimrc" ]; then
   cp "$HOME/.vimrc" "$BACKUP_DIR/"
 fi
 
+# Backup Starship config
+if [ -f "$HOME/.config/starship.toml" ]; then
+  mkdir -p "$BACKUP_DIR/.config"
+  cp "$HOME/.config/starship.toml" "$BACKUP_DIR/.config/"
+fi
+
 # Backup local config (not tracked in repo)
 if [ -f "$HOME/.gitconfig.local" ]; then
   cp "$HOME/.gitconfig.local" "$BACKUP_DIR/"
