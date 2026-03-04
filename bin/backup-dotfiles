@@ -3,54 +3,62 @@
 # Script to create a backup of current dotfiles before making changes
 
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
-BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d%H%M%S)"
+BACKUP_DIR="${HOME:?HOME must be set}/.dotfiles_backup/$(date +%Y%m%d%H%M%S)"
 
 mkdir -p "$BACKUP_DIR"
 
 echo "Creating backup of current dotfiles to $BACKUP_DIR"
 
+# Use -L so symlinks are dereferenced and we store actual file content
+CP_OPTS="-L"
+COUNT=0
+
 # Backup ZSH files
-if [ -f "$HOME/.zshrc" ]; then
-  cp "$HOME/.zshrc" "$BACKUP_DIR/"
+if [ -e "$HOME/.zshrc" ]; then
+  cp $CP_OPTS "$HOME/.zshrc" "$BACKUP_DIR/" && COUNT=$((COUNT + 1))
 fi
 
-if [ -f "$HOME/.zprofile" ]; then
-  cp "$HOME/.zprofile" "$BACKUP_DIR/"
+if [ -e "$HOME/.zprofile" ]; then
+  cp $CP_OPTS "$HOME/.zprofile" "$BACKUP_DIR/" && COUNT=$((COUNT + 1))
 fi
 
-if [ -f "$HOME/.zsh_aliases" ]; then
-  cp "$HOME/.zsh_aliases" "$BACKUP_DIR/"
+if [ -e "$HOME/.zsh_aliases" ]; then
+  cp $CP_OPTS "$HOME/.zsh_aliases" "$BACKUP_DIR/" && COUNT=$((COUNT + 1))
 fi
 
 # Backup Git files
-if [ -f "$HOME/.gitconfig" ]; then
-  cp "$HOME/.gitconfig" "$BACKUP_DIR/"
+if [ -e "$HOME/.gitconfig" ]; then
+  cp $CP_OPTS "$HOME/.gitconfig" "$BACKUP_DIR/" && COUNT=$((COUNT + 1))
 fi
 
-if [ -f "$HOME/.gitignore_global" ]; then
-  cp "$HOME/.gitignore_global" "$BACKUP_DIR/"
+if [ -e "$HOME/.gitignore_global" ]; then
+  cp $CP_OPTS "$HOME/.gitignore_global" "$BACKUP_DIR/" && COUNT=$((COUNT + 1))
 fi
 
 # Backup Vim files
-if [ -f "$HOME/.vimrc" ]; then
-  cp "$HOME/.vimrc" "$BACKUP_DIR/"
+if [ -e "$HOME/.vimrc" ]; then
+  cp $CP_OPTS "$HOME/.vimrc" "$BACKUP_DIR/" && COUNT=$((COUNT + 1))
 fi
 
 # Backup Starship config
-if [ -f "$HOME/.config/starship.toml" ]; then
+if [ -e "$HOME/.config/starship.toml" ]; then
   mkdir -p "$BACKUP_DIR/.config"
-  cp "$HOME/.config/starship.toml" "$BACKUP_DIR/.config/"
+  cp $CP_OPTS "$HOME/.config/starship.toml" "$BACKUP_DIR/.config/" && COUNT=$((COUNT + 1))
 fi
 
 # Backup local config (not tracked in repo)
-if [ -f "$HOME/.gitconfig.local" ]; then
-  cp "$HOME/.gitconfig.local" "$BACKUP_DIR/"
+if [ -e "$HOME/.gitconfig.local" ]; then
+  cp $CP_OPTS "$HOME/.gitconfig.local" "$BACKUP_DIR/" && COUNT=$((COUNT + 1))
 fi
-if [ -f "$HOME/.zshrc.local" ]; then
-  cp "$HOME/.zshrc.local" "$BACKUP_DIR/"
+if [ -e "$HOME/.zshrc.local" ]; then
+  cp $CP_OPTS "$HOME/.zshrc.local" "$BACKUP_DIR/" && COUNT=$((COUNT + 1))
 fi
-if [ -f "$HOME/.vimrc.local" ]; then
-  cp "$HOME/.vimrc.local" "$BACKUP_DIR/"
+if [ -e "$HOME/.vimrc.local" ]; then
+  cp $CP_OPTS "$HOME/.vimrc.local" "$BACKUP_DIR/" && COUNT=$((COUNT + 1))
 fi
 
-echo "Backup completed successfully!"
+if [ "$COUNT" -eq 0 ]; then
+  echo "Warning: no dotfiles were found to back up. Is HOME correct ($HOME)? Did you run install first?" >&2
+else
+  echo "Backup completed successfully! ($COUNT file(s) copied.)"
+fi
