@@ -199,7 +199,7 @@ CORE_PACKAGES=(
   "grep"
   "jq"
   "tree"
-  "vim"
+  "macvim"
   "wget"
   "zsh"
 )
