@@ -34,7 +34,7 @@ The installation scripts support various flags to control behavior:
 - `./install.sh --dry-run`: Preview what would be linked or backed up; no changes made
 - `./install.sh --links-only`: Only create symlinks and .local templates; skip ZSH/Homebrew/macOS/dev setup
 
-When run without flags, the scripts will prompt for confirmation before making any potentially destructive changes.
+When run without flags, the scripts will prompt for confirmation before making any potentially destructive changes. On Linux, use `--links-only` and install tools (e.g. Starship, Git) via your package manager; Homebrew and macOS settings are macOS-only.
 
 ### Safe install (existing environment)
 

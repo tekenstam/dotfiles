@@ -73,7 +73,7 @@ HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.zsh_history
 
-# Created by `pipx` on 2026-03-04 17:46:11
+# pipx / user-installed Python tools
 export PATH="$PATH:$HOME/.local/bin"
 
 # Starship prompt (Git, Kubernetes, AWS, directory, status, time)
