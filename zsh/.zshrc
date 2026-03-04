@@ -44,8 +44,8 @@ fi
 # Enable production safeguards (uncomment to activate)
 # enable_prod_safeguard
 
-# Setup architecture-specific environment
-setup_arch_env
+# Setup architecture-specific environment (if loaded from functions)
+type setup_arch_env &>/dev/null && setup_arch_env
 
 # Source local configuration (not tracked in Git)
 if [ -f ~/.zshrc.local ]; then
