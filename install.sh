@@ -150,14 +150,32 @@ echo "Setting up Git configuration..."
 link_file "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
 link_file "$DOTFILES_DIR/git/.gitignore_global" "$HOME/.gitignore_global"
 
-# Set up personal Git configuration if not already present
+# Set up personal config from local/ templates (not tracked in repo)
 if [ ! -f "$HOME/.gitconfig.local" ]; then
     if [ "$DRY_RUN" = true ]; then
         echo "Would create ~/.gitconfig.local from template"
     else
         echo "Creating Git local config template at $HOME/.gitconfig.local"
-        cp "$DOTFILES_DIR/git/.gitconfig.local.example" "$HOME/.gitconfig.local"
+        cp "$DOTFILES_DIR/local/git/gitconfig.local.example" "$HOME/.gitconfig.local"
         echo "Please edit ~/.gitconfig.local to set your personal Git identity."
+    fi
+fi
+if [ ! -f "$HOME/.zshrc.local" ]; then
+    if [ "$DRY_RUN" = true ]; then
+        echo "Would create ~/.zshrc.local from template"
+    else
+        echo "Creating ZSH local config template at $HOME/.zshrc.local"
+        cp "$DOTFILES_DIR/local/zsh/zshrc.local.example" "$HOME/.zshrc.local"
+        echo "Edit ~/.zshrc.local for machine-specific shell settings."
+    fi
+fi
+if [ ! -f "$HOME/.vimrc.local" ]; then
+    if [ "$DRY_RUN" = true ]; then
+        echo "Would create ~/.vimrc.local from template"
+    else
+        echo "Creating Vim local config template at $HOME/.vimrc.local"
+        cp "$DOTFILES_DIR/local/vim/vimrc.local.example" "$HOME/.vimrc.local"
+        echo "Edit ~/.vimrc.local for personal Vim preferences."
     fi
 fi
 
