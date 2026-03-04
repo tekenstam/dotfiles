@@ -30,10 +30,16 @@ The installation scripts support various flags to control behavior:
 
 - `./install.sh --no-prompt`: Skip all confirmation prompts (useful for automated setup)
 - `./install.sh --apply-macos-defaults`: Automatically apply macOS settings
-- `./install.sh --no-zsh`: Skip ZSH plugins installation 
+- `./install.sh --no-zsh`: Skip ZSH plugins installation
 - `./install.sh --no-p10k`: Skip Powerlevel10k setup
+- `./install.sh --dry-run`: Preview what would be linked or backed up; no changes made
+- `./install.sh --links-only`: Only create symlinks and .local templates; skip ZSH/Homebrew/macOS/dev setup
 
 When run without flags, the scripts will prompt for confirmation before making any potentially destructive changes.
+
+### Safe install (existing environment)
+
+To install over an existing setup without losing config: run `./bin/backup-dotfiles` first, or rely on `install.sh`, which backs up any existing files it replaces into `~/.dotfiles_backup/<YYYYMMDDHHMMSS>/`. Existing `~/.gitconfig.local`, `~/.zshrc.local`, and `~/.vimrc.local` are never overwritten. To restore a file: `cp ~/.dotfiles_backup/<timestamp>/<filename> ~/<filename>`.
 
 ## Key Features
 
@@ -61,7 +67,7 @@ To update your dotfiles installation:
 ~/bin/update-dotfiles
 ```
 
-Or manually:
+This runs `git pull` then `./install.sh --links-only`, so only symlinks and local templates are updated without re-prompting for optional setup. To run a full install instead:
 
 ```bash
 cd ~/.dotfiles
