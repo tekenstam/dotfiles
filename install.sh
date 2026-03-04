@@ -15,6 +15,7 @@ NO_PROMPT=false             # Skip all confirmation prompts
 APPLY_MACOS_DEFAULTS=false  # Apply macOS settings automatically
 SETUP_ZSH=true          # Set up ZSH plugins
 SETUP_POWERLEVEL10K=true    # Set up Powerlevel10k theme
+DRY_RUN=false               # Preview only; no changes
 
 for arg in "$@"; do
   case $arg in
@@ -32,6 +33,10 @@ for arg in "$@"; do
       ;;
     --no-p10k)
       SETUP_POWERLEVEL10K=false
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=true
       shift
       ;;
   esac
@@ -52,13 +57,23 @@ confirm() {
   return 0
 }
 
-# Create backup directory
-mkdir -p "$BACKUP_DIR"
+# Create backup directory (skip when dry-run)
+if [ "$DRY_RUN" = false ]; then
+  mkdir -p "$BACKUP_DIR"
+fi
 
 # Function to link a file
 link_file() {
     local src="$1"
     local dest="$2"
+    
+    if [ "$DRY_RUN" = true ]; then
+        if [ -e "$dest" ] && [ ! -L "$dest" ]; then
+            echo "Would back up $dest to $BACKUP_DIR/$(basename "$dest")"
+        fi
+        echo "Would link $src to $dest"
+        return
+    fi
     
     # If the destination exists and is not a symlink, back it up
     if [ -e "$dest" ] && [ ! -L "$dest" ]; then
@@ -74,12 +89,16 @@ link_file() {
     ln -sf "$src" "$dest"
 }
 
-# Display warning and confirmation
-echo "This script will create symlinks from your home directory to the dotfiles in this repository."
-echo "It will back up any existing files with the same names to $BACKUP_DIR."
-if ! confirm "Do you want to continue?"; then
-    echo "Installation canceled."
-    exit 0
+# Display warning and confirmation (skip when dry-run)
+if [ "$DRY_RUN" = true ]; then
+  echo "Dry run – no changes will be made."
+else
+  echo "This script will create symlinks from your home directory to the dotfiles in this repository."
+  echo "It will back up any existing files with the same names to $BACKUP_DIR."
+  if ! confirm "Do you want to continue?"; then
+      echo "Installation canceled."
+      exit 0
+  fi
 fi
 
 # Install ZSH files
@@ -127,24 +146,38 @@ link_file "$DOTFILES_DIR/git/.gitignore_global" "$HOME/.gitignore_global"
 
 # Set up personal Git configuration if not already present
 if [ ! -f "$HOME/.gitconfig.local" ]; then
-    echo "Creating Git local config template at $HOME/.gitconfig.local"
-    cp "$DOTFILES_DIR/git/.gitconfig.local.example" "$HOME/.gitconfig.local"
-    echo "Please edit ~/.gitconfig.local to set your personal Git identity."
+    if [ "$DRY_RUN" = true ]; then
+        echo "Would create ~/.gitconfig.local from template"
+    else
+        echo "Creating Git local config template at $HOME/.gitconfig.local"
+        cp "$DOTFILES_DIR/git/.gitconfig.local.example" "$HOME/.gitconfig.local"
+        echo "Please edit ~/.gitconfig.local to set your personal Git identity."
+    fi
 fi
 
 # Install Vim configuration
 echo "Setting up Vim configuration..."
 link_file "$DOTFILES_DIR/vim/.vimrc" "$HOME/.vimrc"
-mkdir -p "$HOME/.vim"
+if [ "$DRY_RUN" = false ]; then
+  mkdir -p "$HOME/.vim"
+fi
 
 # Install bin scripts
 echo "Setting up bin scripts..."
-mkdir -p "$HOME/bin"
+if [ "$DRY_RUN" = false ]; then
+  mkdir -p "$HOME/bin"
+fi
 for script in "$DOTFILES_DIR/bin"/*; do
     if [ -f "$script" ]; then
         link_file "$script" "$HOME/bin/$(basename "$script")"
     fi
 done
+
+# Dry run stops here
+if [ "$DRY_RUN" = true ]; then
+  echo "Dry run complete. No changes were made."
+  exit 0
+fi
 
 # macOS specific setup
 if [[ "$OSTYPE" == "darwin"* ]]; then
