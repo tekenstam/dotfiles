@@ -44,7 +44,7 @@ The `brew.sh` script installs Homebrew and common packages:
 - **Core**: Essential tools like git, curl, wget, vim
 - **Development**: Languages and dev tools (Go, Python, Kubernetes, etc.)
 - **Utilities**: Productivity tools like fzf, ripgrep, tmux
-- **Extras**: Nice-to-have tools like bat, exa, neofetch
+- **Extras**: Nice-to-have tools like bat, eza, neofetch
 - **Casks**: GUI applications (VS Code, Firefox, iTerm2, etc.)
 
 ### Usage

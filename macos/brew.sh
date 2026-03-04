@@ -243,7 +243,7 @@ UTILITY_PACKAGES=(
   "pass" # Password manager
   "ripgrep" # Fast grep
   "shellcheck" # Shell script linter
-  "tldr" # Simplified man pages
+  "tlrc" # Simplified man pages (replacement for deprecated tldr)
   "tmux"
   "watch"
   "xz"
@@ -253,7 +253,7 @@ UTILITY_PACKAGES=(
 EXTRA_PACKAGES=(
   "neofetch" # System info script
   "bat" # Better cat
-  "exa" # Modern ls replacement
+  "eza" # Modern ls replacement (successor to exa)
   "ipcalc" # Network calculator
   "imagemagick"
   "mosh" # Mobile shell
@@ -313,7 +313,7 @@ else
 fi
 
 # Install extra packages
-if [ "$INSTALL_ALL" = true ] || [ "$INSTALL_EXTRAS" = true ] || confirm "Do you want to install extra packages? (bat, exa, etc.)"; then
+if [ "$INSTALL_ALL" = true ] || [ "$INSTALL_EXTRAS" = true ] || confirm "Do you want to install extra packages? (bat, eza, etc.)"; then
   install_packages "extra" "${EXTRA_PACKAGES[@]}"
 else
   echo -e "${YELLOW}Skipping extra packages.${NC}"
