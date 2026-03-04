@@ -21,8 +21,8 @@ set -e
 # Source common utilities
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-# Node version to install (if not already installed)
-DEFAULT_NODE_VERSION="18"
+# Node version to install (if not already installed); "lts" = latest LTS, "node" = current latest
+DEFAULT_NODE_VERSION="lts"
 
 # Parse command line arguments
 INSTALL_NODE=false
@@ -98,7 +98,10 @@ install_node() {
   nvm use "$NODE_VERSION"
   nvm alias default "$NODE_VERSION"
   
-  print_success "Node.js v$NODE_VERSION installed successfully!"
+  local version_display="$NODE_VERSION"
+  [ "$NODE_VERSION" = "lts" ] && version_display="LTS"
+  [ "$NODE_VERSION" = "node" ] && version_display="latest"
+  print_success "Node.js ($version_display) installed successfully!"
 }
 
 # Setup Node.js environment
