@@ -2,7 +2,7 @@
 
 # Dotfiles Installation Script
 # This script sets up the dotfiles by creating symlinks and configuring the environment
-# It handles ZSH plugins, Powerlevel10k, and development environment setup
+# It handles ZSH plugins, Starship prompt, and development environment setup
 
 # Exit on error
 set -e
@@ -14,7 +14,6 @@ BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d%H%M%S)"
 NO_PROMPT=false             # Skip all confirmation prompts
 APPLY_MACOS_DEFAULTS=false  # Apply macOS settings automatically
 SETUP_ZSH=true          # Set up ZSH plugins
-SETUP_POWERLEVEL10K=true    # Set up Powerlevel10k theme
 DRY_RUN=false               # Preview only; no changes
 LINKS_ONLY=false            # Only symlinks and .local templates; no optional setup
 
@@ -30,10 +29,6 @@ for arg in "$@"; do
       ;;
     --no-zsh)
       SETUP_ZSH=false
-      shift
-      ;;
-    --no-p10k)
-      SETUP_POWERLEVEL10K=false
       shift
       ;;
     --dry-run)
@@ -112,9 +107,14 @@ echo "Setting up ZSH configuration..."
 link_file "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
 link_file "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile"
 link_file "$DOTFILES_DIR/zsh/.zsh_aliases" "$HOME/.zsh_aliases"
-link_file "$DOTFILES_DIR/zsh/.p10k.zsh" "$HOME/.p10k.zsh"
 
-# Setup ZSH plugins and Powerlevel10k
+# Starship prompt config (Git, Kubernetes, AWS)
+if [ "$DRY_RUN" = false ]; then
+  mkdir -p "$HOME/.config"
+fi
+link_file "$DOTFILES_DIR/zsh/starship.toml" "$HOME/.config/starship.toml"
+
+# Setup ZSH plugins
 if [ "$SETUP_ZSH" = true ]; then
     if [ -f "$DOTFILES_DIR/zsh/setup/plugins.sh" ]; then
         if [ "$NO_PROMPT" = true ] || confirm "Do you want to set up ZSH plugins? (autosuggestions, syntax-highlighting, etc.)"; then
@@ -126,21 +126,6 @@ if [ "$SETUP_ZSH" = true ]; then
             fi
         else
             echo "Skipping ZSH plugins setup."
-        fi
-    fi
-fi
-
-if [ "$SETUP_POWERLEVEL10K" = true ]; then
-    if [ -f "$DOTFILES_DIR/zsh/setup/powerlevel10k.sh" ]; then
-        if [ "$NO_PROMPT" = true ] || confirm "Do you want to set up Powerlevel10k theme?"; then
-            echo "Setting up Powerlevel10k theme..."
-            if [ "$NO_PROMPT" = true ]; then
-                "$DOTFILES_DIR/zsh/setup/powerlevel10k.sh" --no-prompt
-            else
-                "$DOTFILES_DIR/zsh/setup/powerlevel10k.sh"
-            fi
-        else
-            echo "Skipping Powerlevel10k setup."
         fi
     fi
 fi

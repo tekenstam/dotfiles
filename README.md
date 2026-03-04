@@ -31,7 +31,6 @@ The installation scripts support various flags to control behavior:
 - `./install.sh --no-prompt`: Skip all confirmation prompts (useful for automated setup)
 - `./install.sh --apply-macos-defaults`: Automatically apply macOS settings
 - `./install.sh --no-zsh`: Skip ZSH plugins installation
-- `./install.sh --no-p10k`: Skip Powerlevel10k setup
 - `./install.sh --dry-run`: Preview what would be linked or backed up; no changes made
 - `./install.sh --links-only`: Only create symlinks and .local templates; skip ZSH/Homebrew/macOS/dev setup
 
@@ -43,7 +42,7 @@ To install over an existing setup without losing config: run `./bin/backup-dotfi
 
 ## Key Features
 
-- **ZSH Environment**: Powerlevel10k theme with AWS, Kubernetes, and Git integration
+- **ZSH Environment**: Starship prompt with AWS, Kubernetes, and Git integration
 - **Development Setups**: Automated setup for Go, Node.js, and Python environments
 - **macOS Optimization**: System preferences and Homebrew package installation
 - **Utility Functions**: Docker, Git, SSH, and system management helpers

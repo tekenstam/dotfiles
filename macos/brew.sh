@@ -143,14 +143,13 @@ install_packages() {
   
   echo -e "${BLUE}Installing ${category} packages...${NC}"
   
-  # Create a list of packages to install; upgrade already-installed to latest
+  # Create a list of packages to install
   local to_install=()
   for package in "${packages[@]}"; do
     if ! brew list "$package" &>/dev/null; then
       to_install+=("$package")
     else
-      echo -e "${GREEN}Package ${package} is already installed. Upgrading to latest...${NC}"
-      brew upgrade "$package" 2>/dev/null || true
+      echo -e "${GREEN}Package ${package} is already installed.${NC}"
     fi
   done
   
@@ -160,7 +159,7 @@ install_packages() {
     brew install "${to_install[@]}"
     echo -e "${GREEN}Packages installed successfully!${NC}"
   else
-    echo -e "${GREEN}All packages already installed and up to date!${NC}"
+    echo -e "${GREEN}All packages already installed!${NC}"
   fi
 }
 
@@ -244,6 +243,7 @@ UTILITY_PACKAGES=(
   "pass" # Password manager
   "ripgrep" # Fast grep
   "shellcheck" # Shell script linter
+  "starship" # Cross-shell prompt (Git, Kubernetes, AWS)
   "tlrc" # Simplified man pages (replacement for deprecated tldr)
   "tmux"
   "watch"

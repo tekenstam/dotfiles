@@ -1,0 +1,86 @@
+# Starship prompt – equivalent to former Powerlevel10k setup
+# Git, Kubernetes (prod/staging colors), AWS, directory, status, time
+# https://starship.rs/config/
+
+add_newline = true
+
+# Left: directory, git branch, git status, newline, prompt character
+format = """
+$directory\
+$git_branch\
+$git_status\
+$line_break\
+$character"""
+
+# Right: status, cmd_duration, aws, kubernetes, hostname, time
+right_format = """$status\
+$cmd_duration\
+$aws\
+$kubernetes\
+$hostname\
+$time"""
+
+# Prompt symbol (same as p10k)
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+# Directory: shorten middle, 2 segments (like p10k)
+[directory]
+truncation_length = 2
+truncate_to_repo = false
+format = "[$path]($style)[$read_only]($read_only_style) "
+read_only = " 🔒"
+
+# Git branch
+[git_branch]
+format = "[ $symbol$branch]($style) "
+symbol = " "
+
+# Git status
+[git_status]
+format = "([$all_status$ahead_behind]($style) )"
+style = "red bold"
+
+# Command duration: only if >= 3s, 2 decimals (like p10k)
+[cmd_duration]
+min_time = 3000
+format = "took [$duration]($style) "
+style = "yellow"
+
+# Exit status
+[status]
+format = "[$symbol$status]($style) "
+symbol = "✗"
+success_symbol = ""
+
+# AWS profile/region
+[aws]
+format = 'on [$symbol($profile )(\($region\) )]($style)'
+style = 'bold blue'
+symbol = '☁️ '
+
+# Kubernetes: prod=red, staging=orange, default=blue (like p10k)
+[kubernetes]
+format = 'on [$symbol$context( \($namespace\))]($style) '
+disabled = false
+symbol = '☸ '
+style = 'bold blue'
+
+[[kubernetes.contexts]]
+context_pattern = '.*prod.*'
+style = 'bold red'
+
+[[kubernetes.contexts]]
+context_pattern = '.*staging.*'
+style = 'bold #ff8800'
+
+# Hostname (user@host)
+[hostname]
+format = '[$hostname]($style) '
+ssh_only = false
+
+# Time
+[time]
+format = '[$time]($style) '
+style = 'dimmed'
