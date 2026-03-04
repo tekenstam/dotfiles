@@ -259,7 +259,6 @@ EXTRA_PACKAGES=(
   "mosh" # Mobile shell
   "speedtest-cli"
   "terminal-notifier"
-  "youtube-dl"
 )
 
 APP_CASKS=(
