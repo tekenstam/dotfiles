@@ -10,7 +10,7 @@ echo "Updating dotfiles repository..."
 # Pull latest changes from remote
 git pull
 
-# Run the install script to update symlinks
-./install.sh
+# Run the install script to update symlinks only (no optional setup prompts)
+./install.sh --links-only
 
 echo "Dotfiles updated successfully!"

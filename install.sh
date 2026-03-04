@@ -16,6 +16,7 @@ APPLY_MACOS_DEFAULTS=false  # Apply macOS settings automatically
 SETUP_ZSH=true          # Set up ZSH plugins
 SETUP_POWERLEVEL10K=true    # Set up Powerlevel10k theme
 DRY_RUN=false               # Preview only; no changes
+LINKS_ONLY=false            # Only symlinks and .local templates; no optional setup
 
 for arg in "$@"; do
   case $arg in
@@ -37,6 +38,11 @@ for arg in "$@"; do
       ;;
     --dry-run)
       DRY_RUN=true
+      shift
+      ;;
+    --links-only)
+      LINKS_ONLY=true
+      NO_PROMPT=true
       shift
       ;;
   esac
@@ -179,6 +185,9 @@ if [ "$DRY_RUN" = true ]; then
   exit 0
 fi
 
+# Optional setup (skipped when --links-only)
+if [ "$LINKS_ONLY" = false ]; then
+
 # macOS specific setup
 if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Setting up macOS specific configurations..."
@@ -256,5 +265,8 @@ if [ -d "$DOTFILES_DIR/setup" ]; then
         echo "Skipping Node.js setup."
     fi
 fi
+
+fi
+# end optional setup (LINKS_ONLY)
 
 echo "Installation complete! You may need to restart your terminal for all changes to take effect."
