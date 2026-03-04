@@ -4,23 +4,23 @@ This directory contains ZSH shell configuration files and setup scripts.
 
 ## Overview
 
-- `.zshrc` - Main ZSH configuration with Powerlevel10k, AWS, and Kubernetes plugins
+- `.zshrc` - Main ZSH configuration with Starship prompt, AWS, and Kubernetes plugins
 - `.zprofile` - Login shell configuration
 - `.zsh_aliases` - Useful aliases and functions
-- `.p10k.zsh` - Powerlevel10k configuration with AWS, Kubernetes, and Git info
+- `starship.toml` - Starship prompt config (Git, Kubernetes, AWS; symlinked to ~/.config/starship.toml)
 - `functions/` - Utility functions for various tasks
-- `setup/` - ZSH and Powerlevel10k setup scripts
+- `setup/` - ZSH plugin setup scripts
 
 ## Features
 
-### Powerlevel10k Theme
+### Starship Prompt
 
-Powerlevel10k is a highly customizable ZSH theme optimized for speed and functionality:
+Starship is a fast, cross-shell prompt with minimal config:
 
-- Instant prompt for faster shell startup
-- AWS profile and Kubernetes context information
-- Git status with branch, commits, and state
-- Color-coded indicators for different environments
+- Git branch and status on the left
+- AWS profile and Kubernetes context on the right (prod=red, staging=orange)
+- Command duration and exit status
+- Directory shortening (truncate middle)
 
 ### Essential Plugins
 
@@ -45,19 +45,13 @@ The `functions/` directory contains helpful utility functions:
 
 ## Setup
 
-The setup scripts in the `setup/` directory handle the installation of ZSH plugins and Powerlevel10k:
+The setup scripts in the `setup/` directory handle the installation of ZSH plugins. Starship is installed via Homebrew (see `macos/brew.sh`) and its config is symlinked from `zsh/starship.toml` to `~/.config/starship.toml` by `install.sh`.
 
 - `plugins.sh` - Installs Oh My Zsh and plugins
-- `powerlevel10k.sh` - Installs Powerlevel10k theme and required fonts
-
-These scripts are automatically called by the main installation script with options:
 
 ```bash
 # Install ZSH plugins
 ./zsh/setup/plugins.sh
-
-# Install Powerlevel10k theme
-./zsh/setup/powerlevel10k.sh
 
 # Use with no-prompt option
 ./zsh/setup/plugins.sh --no-prompt

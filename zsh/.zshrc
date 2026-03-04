@@ -1,17 +1,8 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
-# Set name of the theme
-ZSH_THEME="powerlevel10k/powerlevel10k"
+# No OMZ theme; prompt is handled by Starship
+ZSH_THEME=""
 
 # Add plugins
 plugins=(
@@ -53,17 +44,12 @@ fi
 # Enable production safeguards (uncomment to activate)
 # enable_prod_safeguard
 
-# Setup architecture-specific environment
-setup_arch_env
+# Setup architecture-specific environment (if loaded from functions)
+type setup_arch_env &>/dev/null && setup_arch_env
 
 # Source local configuration (not tracked in Git)
 if [ -f ~/.zshrc.local ]; then
   source ~/.zshrc.local
-fi
-
-# Source Powerlevel10k configuration
-if [ -f ~/.p10k.zsh ]; then
-  source ~/.p10k.zsh
 fi
 
 # Initialize nvm if it exists
@@ -86,3 +72,9 @@ export VISUAL='vim'
 HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.zsh_history
+
+# Created by `pipx` on 2026-03-04 17:46:11
+export PATH="$PATH:$HOME/.local/bin"
+
+# Starship prompt (Git, Kubernetes, AWS, directory, status, time)
+eval "$(starship init zsh)"
