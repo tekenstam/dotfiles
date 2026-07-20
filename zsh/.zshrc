@@ -78,3 +78,17 @@ export PATH="$PATH:$HOME/.local/bin"
 
 # Starship prompt (Git, Kubernetes, AWS, directory, status, time)
 eval "$(starship init zsh)"
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/tekenstam/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+export NODE_EXTRA_CA_CERTS=~/.ssl/netskope.pem
+
+# ZIA-CERT-STORE-MANAGED profile.d sourcing
+if [ -d /etc/profile.d ]; then
+  for _zia_f in /etc/profile.d/*.sh; do [ -f "$_zia_f" ] && . "$_zia_f"; done
+  unset _zia_f
+fi
+# ZIA-CERT-STORE-MANAGED-END
+
+. "$HOME/.local/share/../bin/env"
